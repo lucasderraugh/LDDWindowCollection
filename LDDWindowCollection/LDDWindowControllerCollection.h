@@ -19,6 +19,7 @@ typedef void(^LDDAnimationBlock)(NSWindow *window, NSRect proposedEndFrame);
 
 /**
  *  Presents a given window controller (calls NSWindowController's -showWindow:) and adds it to the collection.
+ *	Window is presented without animation
  *
  *  @param controller The window controller to be added.
  */

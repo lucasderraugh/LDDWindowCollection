@@ -18,14 +18,15 @@
 
 @implementation AppDelegate
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
-{
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     _windowControllerCollection = [[LDDWindowControllerCollection alloc] init];
 }
 
+#pragma mark - IBActions
+
 - (IBAction)showWithoutAnimation:(id)sender {
     WindowController *wc = [[WindowController alloc] init];
-    [_windowControllerCollection presentWindowController:wc animatedFromBottom:NO];
+    [_windowControllerCollection presentWindowController:wc];
 }
 
 - (IBAction)showWithAnimation:(id)sender {

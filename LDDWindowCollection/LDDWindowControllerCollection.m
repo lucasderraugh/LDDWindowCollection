@@ -19,10 +19,6 @@
 - (id)init {
     if (self = [super init]) {
         _windowControllers = [[NSMutableArray alloc] init];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(removeWindowController:)
-                                                     name:NSWindowWillCloseNotification
-                                                   object:nil];
     }
     return self;
 }
@@ -43,8 +39,10 @@
 
 // Designated presenter
 - (void)presentWindowController:(NSWindowController *)controller withAnimationBlock:(LDDAnimationBlock)block {
-    if (![self addWindowController:controller]) return;
-    
+    if ([self containsController:controller]) return;
+	
+	[self addWindowController:controller];
+	
     if (block) {
         block(controller.window, controller.window.frame);
     } else {
@@ -53,11 +51,10 @@
 }
 
 - (BOOL)containsWindow:(NSWindow *)window {
-    for (NSWindowController *wC in _windowControllers) {
-        if ([wC.window isEqual:window]) {
-            return YES;
-        }
-    }
+	NSWindowController *controller = window.windowController;
+	if (controller) {
+		return [_windowControllers containsObject:controller];
+	}
     return NO;
 }
 
@@ -67,29 +64,27 @@
 
 #pragma mark - Private
 
-- (BOOL)addWindowController:(NSWindowController *)controller {
-    if ([_windowControllers containsObject:controller]) {
-        return NO;
-    }
+- (void)addWindowController:(NSWindowController *)controller {
     [controller.window setReleasedWhenClosed:NO];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(removeWindowController:)
+												 name:NSWindowWillCloseNotification
+											   object:controller.window];
     [_windowControllers addObject:controller];
-    return YES;
-}
-
-// Strickly called upon notification, should not be invoked otherwise!
-- (void)removeWindowController:(NSNotification *)notification {
-    __autoreleasing NSWindowController *controllerToRemove = nil;
-    for (NSWindowController *controller in _windowControllers) {
-        if ([controller.window isEqual:[notification object]]) {
-            controllerToRemove = controller;
-            break;
-        }
-    }
-    [_windowControllers removeObject:controllerToRemove];
 }
 
 NSRect startFrameForBottomAnimationUsingEndFrame(NSRect frame) {
     return NSMakeRect(frame.origin.x, 0-frame.size.height, frame.size.width, frame.size.height);
+}
+
+#pragma mark - Notifications
+
+// Strickly called upon notification, should not be invoked otherwise!
+- (void)removeWindowController:(NSNotification *)notification {
+	NSWindow *window = (NSWindow *)notification.object;
+	
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowWillCloseNotification object:window];
+	[_windowControllers removeObject:window.windowController];
 }
 
 - (void)dealloc {
