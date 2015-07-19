@@ -31,3 +31,4 @@ WindowController *wc = [[WindowController alloc] init];
     [NSAnimationContext endGrouping];
 }];
 ```
+![](https://github.com/lucasderraugh/LDDWindowCollection/blob/master/WindowGIF.gif)
