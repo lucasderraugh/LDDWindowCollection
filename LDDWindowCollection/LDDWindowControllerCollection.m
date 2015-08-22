@@ -10,7 +10,7 @@
 
 @interface LDDWindowControllerCollection ()
 
-@property (nonatomic, strong, readwrite) NSMutableArray *windowControllers;
+@property (nonatomic, strong) NSMutableArray *windowControllers;
 
 @end
 
@@ -32,7 +32,7 @@
         NSRect startFrame = startFrameForBottomAnimationUsingEndFrame(proposedEndFrame);
         [window setFrame:startFrame display:YES];
         [window makeKeyAndOrderFront:nil];
-        [[window animator] setFrame:proposedEndFrame display:YES];
+        [window.animator setFrame:proposedEndFrame display:YES];
     };
     [self presentWindowController:controller withAnimationBlock:block];
 }
@@ -51,11 +51,7 @@
 }
 
 - (BOOL)containsWindow:(NSWindow *)window {
-	NSWindowController *controller = window.windowController;
-	if (controller) {
-		return [_windowControllers containsObject:controller];
-	}
-    return NO;
+	return window.windowController ? [_windowControllers containsObject:window.windowController] : NO;
 }
 
 - (BOOL)containsController:(NSWindowController *)controller {
@@ -65,7 +61,7 @@
 #pragma mark - Private
 
 - (void)addWindowController:(NSWindowController *)controller {
-    [controller.window setReleasedWhenClosed:NO];
+    controller.window.releasedWhenClosed = NO;
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(removeWindowController:)
 												 name:NSWindowWillCloseNotification
@@ -74,7 +70,8 @@
 }
 
 NSRect startFrameForBottomAnimationUsingEndFrame(NSRect frame) {
-    return NSMakeRect(frame.origin.x, 0-frame.size.height, frame.size.width, frame.size.height);
+	frame.origin.y = -frame.size.height;
+	return frame;
 }
 
 #pragma mark - Notifications
