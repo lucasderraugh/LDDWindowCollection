@@ -12,39 +12,39 @@
 
 @interface AppDelegate ()
 
-@property (nonatomic, strong) LDDWindowControllerCollection *windowControllerCollection;
+@property (nonatomic, strong) LDDWindowControllerCollection *windowCollection;
 
 @end
 
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-    _windowControllerCollection = [[LDDWindowControllerCollection alloc] init];
+    _windowCollection = [[LDDWindowControllerCollection alloc] init];
 }
 
 #pragma mark - IBActions
 
 - (IBAction)showWithoutAnimation:(id)sender {
     WindowController *wc = [[WindowController alloc] init];
-    [_windowControllerCollection presentWindowController:wc];
+    [self.windowCollection presentWindowController:wc];
 }
 
 - (IBAction)showWithAnimation:(id)sender {
     WindowController *wc = [[WindowController alloc] init];
-    [_windowControllerCollection presentWindowController:wc animatedFromBottom:YES];
+    [self.windowCollection presentWindowController:wc animatedFromBottom:YES];
 }
 
 - (IBAction)showWithCustomAnimation:(id)sender {
     WindowController *wc = [[WindowController alloc] init];
-    [_windowControllerCollection presentWindowController:wc withAnimationBlock:^(NSWindow *window, NSRect proposedEndFrame) {
-        [window setAlphaValue:0.0];
+    [self.windowCollection presentWindowController:wc withAnimationBlock:^(NSWindow *window, NSRect proposedEndFrame) {
+        window.alphaValue = 0.0;
         [window setFrame:NSOffsetRect(proposedEndFrame, 0, -20) display:YES];
         [window makeKeyAndOrderFront:nil];
-        [NSAnimationContext beginGrouping];
-        [[NSAnimationContext currentContext] setDuration:1.0];
-        [[window animator] setAlphaValue:1.0];
-        [[window animator] setFrame:proposedEndFrame display:YES];
-        [NSAnimationContext endGrouping];
+        [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
+            context.duration = 1.0;
+            window.animator.alphaValue = 1.0;
+            [window.animator setFrame:proposedEndFrame display:YES];
+        } completionHandler:nil];
     }];
 }
 

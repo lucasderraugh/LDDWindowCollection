@@ -10,7 +10,7 @@
 
 @interface LDDWindowControllerCollection ()
 
-@property (nonatomic, strong) NSMutableArray *windowControllers;
+@property (nonatomic, copy) NSMutableArray *windowControllers;
 
 @end
 
@@ -62,10 +62,10 @@
 
 - (void)addWindowController:(NSWindowController *)controller {
     controller.window.releasedWhenClosed = NO;
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(removeWindowController:)
-												 name:NSWindowWillCloseNotification
-											   object:controller.window];
+	[NSNotificationCenter.defaultCenter addObserver:self
+                                           selector:@selector(removeWindowController:)
+                                               name:NSWindowWillCloseNotification
+                                             object:controller.window];
     [_windowControllers addObject:controller];
 }
 
@@ -80,12 +80,12 @@ NSRect startFrameForBottomAnimationUsingEndFrame(NSRect frame) {
 - (void)removeWindowController:(NSNotification *)notification {
 	NSWindow *window = (NSWindow *)notification.object;
 	
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowWillCloseNotification object:window];
+	[NSNotificationCenter.defaultCenter removeObserver:self name:NSWindowWillCloseNotification object:window];
 	[_windowControllers removeObject:window.windowController];
 }
 
 - (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
 @end

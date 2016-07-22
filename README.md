@@ -11,24 +11,24 @@ There are different presentation options, but examples are shown in the main win
 
 ```
 // Defined in AppDelegate or controller for windows
+// Be sure to initialize somewhere with alloc init
 @property LDDWindowCollection *windowCollection;
 
 // In a method that creates a new window
 WindowController *wc = [[WindowController alloc] init];
 [self.windowCollection presentWindowController:wc animatedFromBottom:YES];
 
-
 // Example of custom animation for presenting window
 WindowController *wc = [[WindowController alloc] init];
-[self.windowControllerCollection presentWindowController:wc withAnimationBlock:^(NSWindow *window, NSRect proposedEndFrame) {
-    [window setAlphaValue:0.0];
+[self.windowCollection presentWindowController:wc withAnimationBlock:^(NSWindow *window, NSRect proposedEndFrame) {
+    window.alphaValue = 0.0;
     [window setFrame:NSOffsetRect(proposedEndFrame, 0, -20) display:YES];
     [window makeKeyAndOrderFront:nil];
-    [NSAnimationContext beginGrouping];
-    [[NSAnimationContext currentContext] setDuration:1.0];
-    [[window animator] setAlphaValue:1.0];
-    [[window animator] setFrame:proposedEndFrame display:YES];
-    [NSAnimationContext endGrouping];
+    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
+        context.duration = 1.0;
+        window.animator.alphaValue = 1.0;
+        [window.animator setFrame:proposedEndFrame display:YES];
+    } completionHandler:nil];
 }];
 ```
 ![](https://github.com/lucasderraugh/LDDWindowCollection/blob/master/WindowGIF.gif)

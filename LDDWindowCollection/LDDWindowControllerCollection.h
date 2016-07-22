@@ -44,19 +44,17 @@ typedef void(^LDDAnimationBlock)(NSWindow *window, NSRect proposedEndFrame);
 - (void)presentWindowController:(NSWindowController *)controller withAnimationBlock:(LDDAnimationBlock)block;
 
 /**
- *  Returns a Boolean value that indicates whether a given window exists in the collection.
+ *  Returns a bool that indicates whether a given window exists in the collection.
  *
  *  @param window A window.
- *
  *  @return @c YES if a given window exists in the collection, otherwise @c NO.
  */
 - (BOOL)containsWindow:(NSWindow *)window;
 
 /**
- *  Returns a Boolean value that indicates whether a given window controller exists in the collection.
+ *  Returns a bool that indicates whether a given window controller exists in the collection.
  *
  *  @param controller A controller.
- *
  *  @return @c YES if a given window controller exists in the collection, otherwise @c NO.
  */
 - (BOOL)containsController:(NSWindowController *)controller;
