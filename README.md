@@ -1,5 +1,7 @@
 LDDWindowCollection
 ===================
+![](https://github.com/lucasderraugh/LDDWindowCollection/blob/master/WindowGIF.gif)
+
 Allows you to add a collection of NSWindowControllers and manages the memory for when a window is closed. Some examples of when you might use this are with mail applications where you can compose multiple messages in seperate windows. The behavior is similar to that of a document-based app, without the document.
 
 Usage
@@ -31,4 +33,3 @@ WindowController *wc = [[WindowController alloc] init];
     } completionHandler:nil];
 }];
 ```
-![](https://github.com/lucasderraugh/LDDWindowCollection/blob/master/WindowGIF.gif)
